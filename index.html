@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uday Kumar Punna | Suchitra Studio</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .card {
+            background: white;
+            width: 90%;
+            max-width: 400px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+            text-align: center;
+            padding-bottom: 30px;
+        }
+        .header {
+            background: #222; 
+            height: 120px;
+            position: relative;
+        }
+        .logo-container {
+            width: 110px;
+            height: 110px;
+            background-color: white;
+            border-radius: 50%;
+            position: absolute;
+            bottom: -55px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; 
+            border: 4px solid white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .logo-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+        }
+        .info {
+            margin-top: 65px;
+            padding: 0 20px;
+        }
+        h1 { margin: 0; font-size: 24px; color: #333; }
+        h2 { margin: 5px 0; font-size: 16px; color: #666; font-weight: normal; }
+        .company { color: #888; font-weight: 600; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 15px;}
+        .description { font-size: 13px; color: #555; line-height: 1.5; margin: 15px 10px; font-style: italic; }
+        
+        .contact-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+
+        .btn {
+            border: none;
+            padding: 12px 25px; 
+            font-size: 15px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transition: transform 0.2s;
+            text-decoration: none; 
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn:active { transform: scale(0.95); }
+
+        .btn-call {
+            background-color: #28a745;
+            color: white;
+            flex: 1; 
+        }
+
+        .btn-save {
+            background-color: #000;
+            color: white;
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="header">
+            <div class="logo-container">
+                <img src="logo.png" alt="Suchitra Studio Logo" class="logo-img">
+            </div>
+        </div>
+        
+        <div class="info">
+            <h1>Uday Kumar Punna</h1>
+            <h2>Photographer</h2>
+            <div class="company">Suchitra Studio</div>
+            
+            <p class="description">
+                "We offer professional Wedding Photography along with Cinematic Documentary Production, capturing real emotions, meaningful moments, and timeless details of your celebration."
+            </p>
+
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+
+            <div class="contact-row">
+                <span>📞</span> +91 888 649 5584
+            </div>
+            <div class="contact-row">
+                <span>✉️</span> suchitrastudio@hotmail.com
+            </div>
+
+            <div class="button-group">
+                <a href="tel:+918886495584" class="btn btn-call">📞 Call Now</a>
+                <button id="saveBtn" class="btn btn-save" onclick="handleSave()">💾 Save</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        async function handleSave() {
+            const btn = document.getElementById('saveBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = "Processing..."; 
+
+            const currentWebsiteUrl = window.location.href;
+
+            const vcardText = `BEGIN:VCARD
+VERSION:3.0
+N:Punna;Uday;Kumar;;
+FN:Uday Kumar Punna
+ORG:Suchitra Studio
+TITLE:Photographer
+TEL;TYPE=CELL:+918886495584
+EMAIL:suchitrastudio@hotmail.com
+URL;TYPE=Website:${currentWebsiteUrl}
+NOTE:We offer professional Wedding Photography along with Cinematic Documentary Production.
+END:VCARD`;
+
+            const blob = new Blob([vcardText], { type: 'text/vcard' });
+            const file = new File([blob], "Uday_Punna.vcf", { type: "text/vcard" });
+
+            const forceDownload = () => {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'Uday_Punna.vcf';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                setTimeout(() => btn.innerHTML = originalText, 1000);
+            };
+
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                try {
+                    await navigator.share({
+                        files: [file],
+                        title: 'Uday Kumar Punna',
+                        text: 'Save Contact',
+                    });
+                    btn.innerHTML = originalText; 
+                } catch (err) {
+                    if (err.name !== 'AbortError') {
+                        forceDownload();
+                    } else {
+                         btn.innerHTML = originalText;
+                    }
+                }
+            } else {
+                forceDownload();
+            }
+        }
+    </script>
+</body>
+</html>
